@@ -1,0 +1,64 @@
+<!-- Login Page (Angular + Bootstrap) -->
+
+<div class="container min-vh-100 d-flex justify-content-center align-items-center bg-light">
+  <div class="card shadow-lg p-4" style="width: 100%; max-width: 420px; border-radius: 16px;">
+
+    <div class="text-center mb-4">
+      <h2 class="fw-bold">Connexion</h2>
+      <p class="text-muted">Accédez à votre compte</p>
+    </div>
+
+    <form (ngSubmit)="login()" #loginForm="ngForm">
+
+      <!-- Email -->
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          id="email"
+          type="email"
+          name="email"
+          [(ngModel)]="email"
+          required
+          class="form-control"
+          placeholder="exemple@mail.com"
+        />
+      </div>
+
+      <!-- Password -->
+      <div class="mb-3">
+        <label for="password" class="form-label">Mot de passe</label>
+        <input
+          id="password"
+          type="password"
+          name="password"
+          [(ngModel)]="password"
+          required
+          class="form-control"
+          placeholder="••••••••"
+        />
+      </div>
+
+      <!-- Submit -->
+      <button
+        type="submit"
+        class="btn btn-primary w-100"
+        [disabled]="!loginForm.form.valid"
+      >
+        Se connecter
+      </button>
+
+      <!-- Divider -->
+      <div class="text-center my-3 text-muted">ou</div>
+
+      <!-- Register -->
+      <button
+        type="button"
+        routerLink="/register"
+        class="btn btn-outline-secondary w-100"
+      >
+        Créer un compte
+      </button>
+
+    </form>
+  </div>
+</div>

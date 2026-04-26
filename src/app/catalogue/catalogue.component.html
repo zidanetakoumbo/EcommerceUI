@@ -1,9 +1,32 @@
-<h1>Catalogue : liste des livres </h1>>
+<h1>Catalogue : liste des livres</h1>
+>
 
 <p>
-    Afficher une barre de filtre en haut <br>
-    categorie , prix , nom autheur, nom oeuvre , <br>
-    la section en dessous affiche selon le filtre <br>
-    la barre de filtre doit etre un composant inseré dans le catalogue pour mettre d'implementer <br>
-    pour permettre d'etudier la comm entre deux composants.
+  Afficher une barre de filtre en haut <br />
+  categorie , prix , nom autheur, nom oeuvre , <br />
+  la section en dessous affiche selon le filtre <br />
+  la barre de filtre doit etre un composant inseré dans le catalogue pour mettre
+  d'implementer <br />
+  pour permettre d'etudier la comm entre deux composants.
 </p>
+
+<div class="container">
+  <div class="row">
+    <div class="row">
+      <div
+        class="card col-2 m-2"
+        *ngFor="let book of books"
+        style="width: 10rem"
+      >
+        <img
+          class="card-img-top"
+          [src]="book.image"
+          alt="Image de {{ book.name }}"
+        />
+        <div class="card-body text-center">
+          <a href="#" class="btn btn-primary">Ajouter</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

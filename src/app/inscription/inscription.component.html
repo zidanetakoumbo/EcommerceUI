@@ -1,0 +1,45 @@
+<div class="container">
+  <h2>Inscription</h2>
+
+  <form (ngSubmit)="register()">
+
+    <label>Nom</label>
+    <input type="text" [(ngModel)]="nom" name="nom" required />
+
+    <label>Prenom</label>
+    <input type="text" [(ngModel)]="prenom" name="prenom" required />
+
+    <label>Date de Naissance</label>
+    <input type="date" [(ngModel)]="datenaissance" name="datenaisance" required />
+
+    <label>Adresse postale</label>
+    <input type="text" [(ngModel)]="adresse" name="adresse" required />
+
+    <label>Email</label>
+    <input type="email" [(ngModel)]="email" name="email" required />
+
+    <label>Mot de passe</label>
+    <input type="password" [(ngModel)]="password" name="password" required />
+
+    <label>Confirmer mot de passe</label>
+    <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required />
+
+  
+  <button type="submit" class="btn btn-success w-100">
+    S'inscrire
+  </button>
+   <p class="success" *ngIf="message">
+    {{ message }}
+  </p>
+
+  <p class="error" *ngIf="error">
+    {{ error }}
+  </p>
+  </form>
+
+  <a class="btn" routerLink="/login">
+    Se connecter
+  </a>
+
+ 
+</div>
