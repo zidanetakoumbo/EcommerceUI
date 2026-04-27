@@ -1,11 +1,11 @@
 <p>home works!</p>
 <h1>
   page home qui va afficher la liste des livres deja acheté par la personne
-  connecté
+  connecté 
 </h1>
 
-@if (userName) {
-  <h1>Bienvenue {{ userName }} </h1>
+@if (isLogged()) {
+  <h1>Bienvenue {{ userName() }} </h1>
 }
 
 une une autre div va proposer des livres similaire à ce qu'il a deja acheté cela

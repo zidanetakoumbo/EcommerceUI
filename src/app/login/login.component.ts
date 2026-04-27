@@ -25,9 +25,7 @@ export class LoginComponent {
         localStorage.setItem('token', res.token);
         localStorage.setItem('userName', res.userName);
         localStorage.setItem('email', res.email);
-        console.log(res.token)
-        console.log(res.userName)
-        console.log(res.email)
+        this.authService.setLoggedIn(true)
         this.router.navigate(['/home']);
       },
       error: () => this.error = 'Identifiants invalides'

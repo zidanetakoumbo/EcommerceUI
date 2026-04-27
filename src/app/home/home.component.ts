@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, computed, inject, Signal } from '@angular/core';
 import { AuthService } from '../services/auth/auth.service';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-home',
@@ -9,16 +10,24 @@ import { AuthService } from '../services/auth/auth.service';
 })
 export class HomeComponent {
 
-  userName : string |undefined |  null; 
-  userEmail : string | undefined | null ; 
-  
+  userName : Signal<string | null>
+  userEmail : Signal<string | null >
+  isLogged : Signal<boolean> ; 
 
-  constructor(private auth : AuthService){
-    if(auth.getEmail() ){
-      this.userEmail = auth.getEmail() 
-      this.userName = auth.getUserName()
-    }
+  private auth = inject(AuthService); 
 
+  constructor(){
+
+    // la valeur initiale est obligatoire , par defaut on met a false
+    // l'utilisation oblige d'utiliser les () coté html
+    this.isLogged = toSignal(this.auth.isLoggedIn$, {initialValue : false }); 
+
+    // 2. Des signaux dérivés : ils se recalculent dès que isLogged() change
+    this.userName = computed(() => this.isLogged() ? this.auth.getUserName() : null);
+    this.userEmail = computed(() => this.isLogged() ? this.auth.getEmail() : null);
+
+    console.log("storage username ="+localStorage.getItem("username"));
+    console.log(" username ="+this.userName);
 
   }
 
