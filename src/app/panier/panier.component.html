@@ -1,0 +1,115 @@
+<div class="panier-container">
+  <h1 class="panier-title">Mon Panier</h1>
+
+  <!-- Indicateur de chargement -->
+  <div *ngIf="isLoading" class="loading">
+    <p>Chargement du panier...</p>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="errorMessage" class="alert alert-error">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Message de succès -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+
+  <!-- Contenu du panier (seulement si chargé et non vide) -->
+  <ng-container *ngIf="!isLoading">
+
+    <!-- Panier vide -->
+    <div *ngIf="!panier?.items?.length" class="panier-vide">
+      <p>Votre panier est vide.</p>
+      <a routerLink="/catalogue" class="btn btn-primary">Continuer mes achats</a>
+    </div>
+
+    <!-- Panier avec articles -->
+    <div *ngIf="panier?.items?.length" class="panier-content">
+
+      <!-- Liste des articles -->
+      <div class="panier-items">
+        <!-- On boucle sur chaque article du panier -->
+        <div *ngFor="let item of panier!.items" class="panier-item">
+          <div class="item-info">
+            <!-- Lien vers la page détail du livre -->
+            <a [routerLink]="['/livreDetails', item.livreId]" class="item-titre">
+              {{ item.titreLivre }}
+            </a>
+            <span class="item-prix">{{ item.prixUnitaire | currency:'EUR':'symbol':'1.2-2' }} / unité</span>
+          </div>
+
+          <div class="item-actions">
+            <!-- Contrôle de quantité -->
+            <button
+              class="btn-qty"
+              (click)="modifierQuantite(item, item.quantite - 1)"
+              title="Diminuer">
+              −
+            </button>
+            <!-- [(ngModel)] : liaison bidirectionnelle — la valeur de l'input et item.quantite sont synchronisées -->
+            <input
+              type="number"
+              [(ngModel)]="item.quantite"
+              min="1"
+              class="qty-input"
+              (change)="modifierQuantite(item, item.quantite)" />
+            <button
+              class="btn-qty"
+              (click)="modifierQuantite(item, item.quantite + 1)"
+              title="Augmenter">
+              +
+            </button>
+
+            <!-- Prix total de la ligne -->
+            <span class="item-total">{{ item.prixTotal | currency:'EUR':'symbol':'1.2-2' }}</span>
+
+            <!-- Supprimer cet article -->
+            <button class="btn-supprimer" (click)="supprimerItem(item)" title="Supprimer">
+              ✕
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Résumé et validation -->
+      <div class="panier-resume">
+        <div class="resume-details">
+          <p>{{ nbArticles }} article(s)</p>
+          <p class="total-price">Total : <strong>{{ total | currency:'EUR':'symbol':'1.2-2' }}</strong></p>
+        </div>
+
+        <!-- Formulaire d'adresse de livraison -->
+        <div class="adresse-livraison">
+          <label for="adresse">Adresse de livraison *</label>
+          <!-- [(ngModel)] lie l'input à la variable adresseLivraison du composant -->
+          <input
+            type="text"
+            id="adresse"
+            [(ngModel)]="adresseLivraison"
+            placeholder="Ex: 12 rue de Paris, 75001 Paris"
+            class="adresse-input" />
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="panier-actions">
+          <button class="btn btn-danger" (click)="viderPanier()">
+            Vider le panier
+          </button>
+          <a routerLink="/catalogue" class="btn btn-secondary">
+            Continuer mes achats
+          </a>
+          <!-- [disabled] désactive le bouton si la commande est en cours -->
+          <button
+            class="btn btn-primary"
+            (click)="passerCommande()"
+            [disabled]="isPassingOrder">
+            {{ isPassingOrder ? 'Commande en cours...' : 'Passer la commande' }}
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+</div>

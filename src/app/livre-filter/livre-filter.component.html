@@ -1,0 +1,80 @@
+<!-- ===== COMPOSANT DE FILTRAGE DES LIVRES ===== -->
+<!-- Ce composant est utilisé à la fois dans le catalogue et dans l'admin -->
+<div class="card shadow-sm border-0 mb-4 bg-light">
+  <div class="card-body">
+    <div class="row g-3 align-items-end">
+
+      <!-- Filtre par titre -->
+      <div class="col-md-2 col-sm-6">
+        <label class="form-label small fw-bold text-muted text-uppercase">Titre</label>
+        <!--
+          [(ngModel)] : liaison bidirectionnelle — quand l'utilisateur tape,
+          filters.titre est mis à jour, et sendFilters() est appelé pour notifier le parent.
+        -->
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Ex : Le Petit Prince"
+          [(ngModel)]="filters.titre"
+          (input)="sendFilters()"
+        />
+      </div>
+
+      <!-- Filtre par auteur -->
+      <div class="col-md-2 col-sm-6">
+        <label class="form-label small fw-bold text-muted text-uppercase">Auteur</label>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Ex : Victor Hugo"
+          [(ngModel)]="filters.autheur"
+          (input)="sendFilters()"
+        />
+      </div>
+
+      <!-- Filtre par catégorie (liste déroulante chargée depuis l'API) -->
+      <div class="col-md-3 col-sm-6">
+        <label class="form-label small fw-bold text-muted text-uppercase">Catégorie</label>
+        <select class="form-select" [(ngModel)]="filters.categorie" (change)="sendFilters()">
+          <option value="">Toutes les catégories</option>
+          <!-- @for boucle sur la liste des catégories chargées depuis le backend -->
+          @for (cat of categriesList; track cat.id) {
+            <option [value]="cat.nomCat">{{ cat.nomCat }}</option>
+          }
+        </select>
+      </div>
+
+      <!-- Filtre par prix maximum (curseur/slider) -->
+      <div class="col-md-3 col-sm-6">
+        <label class="form-label small fw-bold text-muted text-uppercase">
+          Prix max : <span class="text-primary">{{ filters.maxPrix }} €</span>
+        </label>
+        <!--
+          type="range" crée un curseur glissant.
+          max="500" : on peut aller jusqu'à 500€ (avant c'était limité à 100€).
+        -->
+        <input
+          type="range"
+          class="form-range"
+          min="0"
+          max="500"
+          step="5"
+          [(ngModel)]="filters.maxPrix"
+          (change)="sendFilters()"
+        />
+        <div class="d-flex justify-content-between small text-muted">
+          <span>0 €</span>
+          <span>500 €</span>
+        </div>
+      </div>
+
+      <!-- Bouton reset : remet tous les filtres à zéro -->
+      <div class="col-md-2 col-sm-12">
+        <button class="btn btn-outline-secondary w-100" (click)="reset()">
+          <i class="bi bi-arrow-counterclockwise me-1"></i>Réinitialiser
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

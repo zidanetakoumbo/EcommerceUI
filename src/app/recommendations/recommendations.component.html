@@ -1,0 +1,56 @@
+<div class="recommendation-page py-5">
+  <div class="container">
+    <div class="row justify-content-center mb-5">
+      <div class="col-lg-10">
+        <div class="card border-0 shadow-sm p-4">
+          <div class="card-body">
+            <h2 class="fw-bold mb-3">Recherche intelligente de livres</h2>
+            <p class="text-muted mb-4">
+              Décrivez ce que vous cherchez et retrouvez jusqu'à 5 livres proches de votre demande.
+            </p>
+            <div class="mb-4">
+              <label class="form-label fw-bold">Votre description</label>
+              <textarea
+                class="form-control"
+                rows="5"
+                [(ngModel)]="description"
+                placeholder="Je cherche un roman historique avec une héroïne forte et une écriture immersive..."
+              ></textarea>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+              <button class="btn btn-primary" (click)="generateRecommendations()" [disabled]="loading">
+                {{ loading ? 'Recherche en cours...' : 'Trouver des livres' }}
+              </button>
+              <a routerLink="/home" class="btn btn-outline-secondary">Retour à l'accueil</a>
+            </div>
+            <p class="text-muted mt-3 mb-0">{{ message }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <div *ngIf="results.length > 0" class="col-12">
+        <h3 class="h5 mb-4">Résultats</h3>
+      </div>
+
+      <div *ngFor="let result of results" class="col-md-6 col-lg-4">
+        <div class="card h-100 shadow-sm border-0">
+          <img *ngIf="result.livre.openCouverture" [src]="result.livre.openCouverture" class="card-img-top" [alt]="result.livre.titre" />
+          <div class="card-body">
+            <h5 class="card-title mb-2">{{ result.livre.titre }}</h5>
+            <p class="text-muted mb-1">{{ result.livre.autheur.nom }} {{ result.livre.autheur.prenom }}</p>
+            <p class="mb-2">{{ result.livre.resume | slice:0:100 }}{{ result.livre.resume.length > 100 ? '...' : '' }}</p>
+            <div class="d-flex flex-wrap gap-1 mb-3">
+              <span *ngFor="let cat of result.livre.categories" class="badge bg-secondary">{{ cat.nomCat }}</span>
+            </div>
+            <div class="d-flex justify-content-between align-items-center">
+              <span class="badge bg-success">Compatibilité {{ result.score }}%</span>
+              <a [routerLink]="['/livreDetails', result.livre.id]" class="btn btn-sm btn-outline-primary">Voir</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

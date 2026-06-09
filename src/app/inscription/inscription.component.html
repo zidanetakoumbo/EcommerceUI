@@ -1,45 +1,83 @@
-<div class="container">
-  <h2>Inscription</h2>
+<!-- Page d'inscription — Bootstrap + Angular -->
+<div class="container min-vh-100 d-flex justify-content-center align-items-center bg-light py-5">
+  <div class="card shadow-lg p-4" style="width: 100%; max-width: 520px; border-radius: 16px;">
 
-  <form (ngSubmit)="register()">
+    <div class="text-center mb-4">
+      <h2 class="fw-bold">Créer un compte</h2>
+      <p class="text-muted">Rejoignez notre librairie en ligne</p>
+    </div>
 
-    <label>Nom</label>
-    <input type="text" [(ngModel)]="nom" name="nom" required />
+    <!-- Formulaire : (ngSubmit) appelle register() quand on clique sur "S'inscrire" -->
+    <form (ngSubmit)="register()">
 
-    <label>Prenom</label>
-    <input type="text" [(ngModel)]="prenom" name="prenom" required />
+      <!-- Nom et prénom côte à côte -->
+      <div class="row g-3 mb-3">
+        <div class="col-6">
+          <label class="form-label">Nom *</label>
+          <!-- [(ngModel)] : liaison bidirectionnelle — la variable TypeScript et le champ HTML sont synchronisés -->
+          <input type="text" [(ngModel)]="nom" name="nom" class="form-control" placeholder="Dupont" required />
+        </div>
+        <div class="col-6">
+          <label class="form-label">Prénom *</label>
+          <input type="text" [(ngModel)]="prenom" name="prenom" class="form-control" placeholder="Marie" required />
+        </div>
+      </div>
 
-    <label>Date de Naissance</label>
-    <input type="date" [(ngModel)]="datenaissance" name="datenaisance" required />
+      <!-- Email -->
+      <div class="mb-3">
+        <label class="form-label">Email *</label>
+        <input type="email" [(ngModel)]="email" name="email" class="form-control" placeholder="exemple@mail.com" required />
+      </div>
 
-    <label>Adresse postale</label>
-    <input type="text" [(ngModel)]="adresse" name="adresse" required />
+      <!-- Date de naissance -->
+      <div class="mb-3">
+        <label class="form-label">Date de naissance *</label>
+        <input type="date" [(ngModel)]="datenaissance" name="datenaissance" class="form-control" required />
+      </div>
 
-    <label>Email</label>
-    <input type="email" [(ngModel)]="email" name="email" required />
+      <!-- Adresse (facultatif) -->
+      <div class="mb-3">
+        <label class="form-label">Adresse postale</label>
+        <input type="text" [(ngModel)]="adresse" name="adresse" class="form-control" placeholder="12 rue de la Paix, 75001 Paris" />
+      </div>
 
-    <label>Mot de passe</label>
-    <input type="password" [(ngModel)]="password" name="password" required />
+      <!-- Mot de passe -->
+      <div class="mb-3">
+        <label class="form-label">Mot de passe *</label>
+        <input type="password" [(ngModel)]="password" name="password" class="form-control" placeholder="••••••••" required />
+        <div class="form-text">Minimum 6 caractères.</div>
+      </div>
 
-    <label>Confirmer mot de passe</label>
-    <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required />
+      <!-- Confirmation mot de passe -->
+      <div class="mb-4">
+        <label class="form-label">Confirmer le mot de passe *</label>
+        <input type="password" [(ngModel)]="confirmPassword" name="confirmPassword" class="form-control" placeholder="••••••••" required />
+      </div>
 
-  
-  <button type="submit" class="btn btn-success w-100">
-    S'inscrire
-  </button>
-   <p class="success" *ngIf="message">
-    {{ message }}
-  </p>
+      <!-- Message d'erreur — affiché seulement si error est non vide -->
+      <div *ngIf="error" class="alert alert-danger py-2 mb-3">
+        {{ error }}
+      </div>
 
-  <p class="error" *ngIf="error">
-    {{ error }}
-  </p>
-  </form>
+      <!-- Message de succès -->
+      <div *ngIf="message" class="alert alert-success py-2 mb-3">
+        {{ message }}
+      </div>
 
-  <a class="btn" routerLink="/login">
-    Se connecter
-  </a>
+      <!-- Bouton submit — [disabled] désactive le bouton pendant le chargement -->
+      <button type="submit" class="btn btn-primary w-100 mb-3" [disabled]="isLoading">
+        <!-- *ngIf affiche soit le spinner soit le texte selon isLoading -->
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+        {{ isLoading ? 'Inscription en cours...' : 'S\'inscrire' }}
+      </button>
 
- 
+      <div class="text-center text-muted">ou</div>
+
+      <!-- Lien vers la connexion — routerLink navigue sans rechargement de page -->
+      <a routerLink="/login" class="btn btn-outline-secondary w-100 mt-3">
+        Déjà un compte ? Se connecter
+      </a>
+
+    </form>
+  </div>
 </div>

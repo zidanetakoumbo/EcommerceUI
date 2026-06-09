@@ -1,0 +1,182 @@
+<!-- ===== ADMIN — FORMULAIRE AJOUT / MODIFICATION LIVRE ===== -->
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12 mb-4">
+      <h2 class="fw-bold">
+        <!-- L'opérateur ternaire : condition ? si_vrai : si_faux -->
+        {{ isEditMode ? 'Modifier le livre' : 'Ajouter un nouveau livre' }}
+      </h2>
+      <p class="text-muted">Les champs marqués * sont obligatoires.</p>
+    </div>
+  </div>
+
+  <!-- Messages de retour -->
+  <div *ngIf="errorMessage" class="alert alert-danger mb-3">{{ errorMessage }}</div>
+
+  <div class="row">
+
+    <!-- ===== Formulaire (2/3 de la largeur) ===== -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+          <!--
+            [formGroup]="livreForm" : lie le formulaire HTML au FormGroup TypeScript
+            (ngSubmit) : appelle onSubmit() quand le formulaire est soumis
+          -->
+          <form [formGroup]="livreForm" (ngSubmit)="onSubmit()">
+            <div class="row g-3">
+
+              <!-- Titre -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Titre *</label>
+                <input type="text" formControlName="titre" class="form-control" placeholder="Ex : Le Petit Prince" />
+                <!-- Affiche une erreur si le champ a été touché et est invalide -->
+                <div *ngIf="livreForm.get('titre')?.invalid && livreForm.get('titre')?.touched"
+                     class="text-danger small mt-1">
+                  Le titre est obligatoire (minimum 2 caractères).
+                </div>
+              </div>
+
+              <!-- Auteur (avec autocomplete Angular Material) -->
+              <div class="col-md-6">
+                <label class="form-label fw-bold">Auteur *</label>
+                <mat-form-field class="w-100" appearance="outline">
+                  <input
+                    type="text"
+                    placeholder="Rechercher un auteur..."
+                    matInput
+                    formControlName="autheur"
+                    [matAutocomplete]="auto"
+                    (input)="onSearch($event)"
+                  />
+                  <!--
+                    mat-autocomplete affiche une liste déroulante.
+                    [displayWith]="displayFn" : convertit l'objet Autheur en texte.
+                    (optionSelected) : appelé quand l'utilisateur clique sur une option.
+                  -->
+                  <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" (optionSelected)="onSelectedAutheur($event)">
+                    <mat-option disabled>— Sélectionnez un auteur —</mat-option>
+                    @for (auth of auteursListFiltered; track auth.id) {
+                      <!-- [value]="auth" stocke l'objet complet, pas juste l'id -->
+                      <mat-option [value]="auth">{{ auth.nom }} {{ auth.prenom }}</mat-option>
+                    }
+                    <!-- Lien rapide pour créer un nouvel auteur si introuvable -->
+                    <mat-option disabled>
+                      <a routerLink="/admin/autheurs/add" class="small text-primary">
+                        + Créer un nouvel auteur
+                      </a>
+                    </mat-option>
+                  </mat-autocomplete>
+                </mat-form-field>
+              </div>
+
+              <!-- Prix -->
+              <div class="col-md-4">
+                <label class="form-label fw-bold">Prix (€) *</label>
+                <input type="number" formControlName="prix" class="form-control" min="0" step="0.01" />
+                <div *ngIf="livreForm.get('prix')?.invalid && livreForm.get('prix')?.touched"
+                     class="text-danger small mt-1">Prix invalide (doit être > 0).</div>
+              </div>
+
+              <!--
+                Quantité en stock — CHAMP MANQUANT AVANT CE FIX.
+                Sans ce champ, les nouveaux livres avaient 0 en stock
+                et ne pouvaient pas être commandés !
+              -->
+              <div class="col-md-4">
+                <label class="form-label fw-bold">Stock initial *</label>
+                <input type="number" formControlName="quantiteStock" class="form-control" min="0" />
+                <div class="form-text">Nombre d'exemplaires disponibles à la vente.</div>
+                <div *ngIf="livreForm.get('quantiteStock')?.invalid && livreForm.get('quantiteStock')?.touched"
+                     class="text-danger small mt-1">La quantité doit être ≥ 0.</div>
+              </div>
+
+              <!-- Catégorie -->
+              <div class="col-md-4">
+                <label class="form-label fw-bold">Catégorie *</label>
+                <select formControlName="categories" class="form-select">
+                  <option value="">Choisir une catégorie</option>
+                  <!-- | async souscrit automatiquement à l'Observable categories$ -->
+                  @for (cat of categories$ | async; track cat.id) {
+                    <option [value]="cat.id">{{ cat.nomCat }}</option>
+                  }
+                </select>
+                <div *ngIf="livreForm.get('categories')?.invalid && livreForm.get('categories')?.touched"
+                     class="text-danger small mt-1">Choisissez une catégorie.</div>
+              </div>
+
+              <!-- URL de la couverture -->
+              <div class="col-12">
+                <label class="form-label fw-bold">URL de la couverture</label>
+                <input
+                  type="text"
+                  formControlName="openCouverture"
+                  class="form-control"
+                  placeholder="https://example.com/image.jpg"
+                  (input)="onImageChange($event)"
+                />
+                <div class="form-text">Laissez vide pour utiliser une image par défaut.</div>
+              </div>
+
+              <!-- Description / résumé -->
+              <div class="col-12">
+                <label class="form-label fw-bold">Résumé *</label>
+                <textarea formControlName="resume" class="form-control" rows="5"
+                  placeholder="Description du livre..."></textarea>
+                <div *ngIf="livreForm.get('resume')?.invalid && livreForm.get('resume')?.touched"
+                     class="text-danger small mt-1">Le résumé est obligatoire.</div>
+              </div>
+
+              <!-- Boutons d'action -->
+              <div class="col-12 d-flex justify-content-end gap-2 mt-2">
+                <button type="button" (click)="onCancel()" class="btn btn-outline-secondary px-4">
+                  Annuler
+                </button>
+                <!--
+                  [disabled]="livreForm.invalid" : désactive le bouton si le formulaire est invalide.
+                  On ne peut pas soumettre un formulaire incomplet.
+                -->
+                <button type="submit" [disabled]="livreForm.invalid" class="btn btn-primary px-4">
+                  {{ isEditMode ? 'Mettre à jour' : 'Enregistrer le livre' }}
+                </button>
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Aperçu de la couverture (1/3 de la largeur) ===== -->
+    <div class="col-lg-4 mt-4 mt-lg-0">
+      <div class="card shadow-sm border-0 sticky-top" style="top: 20px;">
+        <div class="card-header bg-transparent fw-bold py-3">
+          <i class="bi bi-eye me-2"></i>Aperçu
+        </div>
+        <div class="card-body text-center bg-light">
+          <!-- [src]="imagePreview" : affiche l'image en temps réel quand l'URL change -->
+          <img
+            *ngIf="imagePreview"
+            [src]="imagePreview"
+            class="img-fluid rounded shadow-sm mb-3"
+            style="max-height: 350px; object-fit: cover;"
+            alt="Aperçu couverture"
+          />
+          <div *ngIf="!imagePreview" class="text-muted py-5">
+            <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+            <p class="mt-2">Entrez une URL pour voir l'aperçu</p>
+          </div>
+          <!-- Titre du livre (mis à jour en temps réel grâce au FormGroup) -->
+          <p class="fw-bold text-primary mt-2 mb-1">
+            {{ livreForm.get('titre')?.value || 'Titre du livre' }}
+          </p>
+          <p class="text-muted small">
+            {{ livreForm.get('prix')?.value ? (livreForm.get('prix')?.value | currency:'EUR':'symbol':'1.2-2') : 'Prix non défini' }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

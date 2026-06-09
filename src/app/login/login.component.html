@@ -1,63 +1,83 @@
-<!-- Login Page (Angular + Bootstrap) -->
-
+<!-- ===== PAGE DE CONNEXION ===== -->
 <div class="container min-vh-100 d-flex justify-content-center align-items-center bg-light">
-  <div class="card shadow-lg p-4" style="width: 100%; max-width: 420px; border-radius: 16px;">
+  <div class="card shadow-lg p-4 login-card">
 
+    <!-- En-tête de la carte -->
     <div class="text-center mb-4">
+      <div class="login-icon mb-3">
+        <i class="bi bi-book fs-1 text-primary"></i>
+      </div>
       <h2 class="fw-bold">Connexion</h2>
-      <p class="text-muted">Accédez à votre compte</p>
+      <p class="text-muted">Accédez à votre compte librairie</p>
     </div>
 
+    <!-- (ngSubmit) : appelé quand on appuie sur le bouton "submit" du formulaire -->
+    <!-- #loginForm="ngForm" : crée une référence au formulaire pour y accéder dans le template -->
     <form (ngSubmit)="login()" #loginForm="ngForm">
 
-      <!-- Email -->
+      <!-- Champ Email -->
       <div class="mb-3">
-        <label for="email" class="form-label">Email</label>
-        <input
-          id="email"
-          type="email"
-          name="email"
-          [(ngModel)]="email"
-          required
-          class="form-control"
-          placeholder="exemple@mail.com"
-        />
+        <label for="email" class="form-label fw-semibold">Email</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white">
+            <i class="bi bi-envelope text-muted"></i>
+          </span>
+          <input
+            id="email"
+            type="email"
+            name="email"
+            [(ngModel)]="email"
+            required
+            class="form-control border-start-0"
+            placeholder="exemple@mail.com"
+          />
+        </div>
       </div>
 
-      <!-- Password -->
+      <!-- Champ Mot de passe -->
       <div class="mb-3">
-        <label for="password" class="form-label">Mot de passe</label>
-        <input
-          id="password"
-          type="password"
-          name="password"
-          [(ngModel)]="password"
-          required
-          class="form-control"
-          placeholder="••••••••"
-        />
+        <label for="password" class="form-label fw-semibold">Mot de passe</label>
+        <div class="input-group">
+          <span class="input-group-text bg-white">
+            <i class="bi bi-lock text-muted"></i>
+          </span>
+          <input
+            id="password"
+            type="password"
+            name="password"
+            [(ngModel)]="password"
+            required
+            class="form-control border-start-0"
+            placeholder="••••••••"
+          />
+        </div>
       </div>
 
-      <!-- Submit -->
+      <!-- Message d'erreur (ex: identifiants incorrects) -->
+      <div *ngIf="error" class="alert alert-danger py-2 mb-3">
+        <i class="bi bi-exclamation-circle me-2"></i>{{ error }}
+      </div>
+
+      <!--
+        Bouton de connexion :
+        - [disabled] : désactivé si le formulaire est invalide OU si une connexion est en cours
+        - Le spinner Bootstrap apparaît pendant isLoading = true
+        - Le texte change pour informer l'utilisateur de l'état
+      -->
       <button
         type="submit"
-        class="btn btn-primary w-100"
-        [disabled]="!loginForm.form.valid"
-      >
-        Se connecter
+        class="btn btn-primary w-100 py-2 mb-3"
+        [disabled]="!loginForm.form.valid || isLoading">
+        <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+        {{ isLoading ? 'Connexion en cours...' : 'Se connecter' }}
       </button>
 
-      <!-- Divider -->
-      <div class="text-center my-3 text-muted">ou</div>
+      <div class="text-center text-muted mb-3">— ou —</div>
 
-      <!-- Register -->
-      <button
-        type="button"
-        routerLink="/register"
-        class="btn btn-outline-secondary w-100"
-      >
-        Créer un compte
-      </button>
+      <!-- Lien vers la page d'inscription -->
+      <a routerLink="/register" class="btn btn-outline-secondary w-100">
+        <i class="bi bi-person-plus me-2"></i>Créer un compte
+      </a>
 
     </form>
   </div>

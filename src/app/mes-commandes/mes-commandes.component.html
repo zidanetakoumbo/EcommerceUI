@@ -1,0 +1,112 @@
+<div class="commandes-container">
+  <h1 class="page-title">Mes Commandes</h1>
+
+  <!-- Chargement -->
+  <div *ngIf="isLoading" class="loading">Chargement...</div>
+
+  <!-- Erreur -->
+  <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+
+  <!-- Aucune commande -->
+  <div *ngIf="!isLoading && !commandes.length" class="empty-state">
+    <p>Vous n'avez pas encore passé de commande.</p>
+    <a routerLink="/catalogue" class="btn btn-primary">Découvrir notre catalogue</a>
+  </div>
+
+  <!-- Liste des commandes -->
+  <div *ngIf="!isLoading && commandes.length">
+
+    <!-- Nombre total -->
+    <p class="total-info">{{ totalElements }} commande(s) au total</p>
+
+    <!-- Boucle sur les commandes -->
+    <div *ngFor="let commande of commandes" class="commande-card">
+
+      <!-- En-tête de la carte commande (toujours visible) -->
+      <div class="commande-header" (click)="toggleDetail(commande.id)">
+        <div class="commande-meta">
+          <span class="commande-id">Commande #{{ commande.id }}</span>
+          <span class="commande-date">
+            {{ commande.dateCommande | date:'dd/MM/yyyy' }}
+          </span>
+        </div>
+
+        <div class="commande-summary">
+          <!-- Badge de statut coloré -->
+          <span class="statut-badge" [ngClass]="getStatutInfo(commande.status).cssClass">
+            {{ getStatutInfo(commande.status).label }}
+          </span>
+          <span class="commande-total">
+            {{ commande.totalPrice | currency:'EUR':'symbol':'1.2-2' }}
+          </span>
+        </div>
+
+        <!-- Icône pour indiquer si le détail est ouvert -->
+        <span class="toggle-icon">{{ commandeOuverte === commande.id ? '▲' : '▼' }}</span>
+      </div>
+
+      <!-- Détail de la commande (affiché seulement si commandeOuverte === commande.id) -->
+      <div *ngIf="commandeOuverte === commande.id" class="commande-detail">
+
+        <!-- Informations de livraison -->
+        <div class="livraison-info">
+          <p><strong>Adresse :</strong> {{ commande.adresseLivraison }}</p>
+          <p *ngIf="commande.dateExpedition">
+            <strong>Expédiée le :</strong> {{ commande.dateExpedition | date:'dd/MM/yyyy' }}
+          </p>
+          <p *ngIf="commande.dateLivraison">
+            <strong>Livrée le :</strong> {{ commande.dateLivraison | date:'dd/MM/yyyy' }}
+          </p>
+        </div>
+
+        <!-- Liste des livres commandés -->
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Livre</th>
+              <th>Prix unitaire</th>
+              <th>Quantité</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of commande.items">
+              <td>
+                <a [routerLink]="['/livreDetails', item.livreId]">{{ item.titreLivre }}</a>
+              </td>
+              <td>{{ item.prixUnitaire | currency:'EUR':'symbol':'1.2-2' }}</td>
+              <td>{{ item.quantite }}</td>
+              <td>{{ item.prixTotal | currency:'EUR':'symbol':'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Bouton annulation (seulement si statut PENDING) -->
+        <div class="commande-footer" *ngIf="commande.status === 'PENDING'">
+          <button class="btn btn-danger" (click)="annulerCommande(commande)">
+            Annuler cette commande
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button
+        class="btn btn-secondary"
+        (click)="pagePrecedente()"
+        [disabled]="pageActuelle === 0">
+        ← Précédent
+      </button>
+      <span class="page-info">Page {{ pageActuelle + 1 }} / {{ totalPages }}</span>
+      <button
+        class="btn btn-secondary"
+        (click)="pageSuivante()"
+        [disabled]="pageActuelle >= totalPages - 1">
+        Suivant →
+      </button>
+    </div>
+
+  </div>
+</div>

@@ -1,0 +1,59 @@
+/* ===== SIDEBAR ADMIN ===== */
+
+.admin-sidebar {
+  width: 280px;
+  height: 100vh;      /* Toute la hauteur de l'écran */
+  position: fixed;    /* Reste visible même quand on scrolle */
+  left: 0;
+  top: 0;
+  z-index: 1000;      /* Au-dessus du contenu principal */
+  overflow-y: auto;   /* Scroll vertical si le menu est trop long */
+}
+
+/* Nécessaire pour que :host occupe toute la hauteur dans le DOM parent */
+:host {
+  display: block;
+}
+
+/* ===== LIENS DE NAVIGATION ===== */
+
+/* Lien actif (routerLinkActive="active" ajoute la classe "active") */
+.nav-link.active {
+  background-color: #0d6efd !important;  /* Bleu Bootstrap */
+  color: white !important;
+}
+
+/* Effet de survol sur les liens non-actifs */
+.nav-link:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-radius: 0.375rem;
+}
+
+/* Transition douce sur les liens */
+.nav-link {
+  transition: background-color 0.15s ease;
+  border-radius: 0.375rem;
+}
+
+/* ===== AVATAR INITIALES ===== */
+
+/* Cercle avec la première lettre du prénom de l'admin
+   Remplace l'image GitHub qui était hardcodée dans l'ancienne version */
+.avatar-initiales {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;               /* Cercle parfait */
+  background-color: #0d6efd;        /* Bleu Bootstrap */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  flex-shrink: 0;                   /* Ne rétrécit pas si le texte est long */
+}
+
+/* Cursor pointer sur les liens cliquables */
+a {
+  cursor: pointer;
+}

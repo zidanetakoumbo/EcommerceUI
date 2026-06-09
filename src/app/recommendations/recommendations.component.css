@@ -1,0 +1,20 @@
+.recommendation-page {
+  background: #f8f9fa;
+}
+
+.recommendation-page .card {
+  border-radius: 1rem;
+}
+
+.recommendation-page textarea.form-control {
+  min-height: 180px;
+}
+
+.recommendation-page img.card-img-top {
+  object-fit: cover;
+  height: 220px;
+}
+
+.recommendation-page .badge {
+  font-size: 0.8rem;
+}

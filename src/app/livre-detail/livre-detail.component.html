@@ -1,6 +1,187 @@
-<h1> Livre detail </h1>
+<!-- ===== PAGE DÉTAIL DU LIVRE ===== -->
+<div class="livre-detail-container">
 
-Donne les infos sur un livre , <br>
-affiche aussi la page de couverture , la description , un bref resumé de l'oeuvre.<br>
+  <!-- Bouton retour au catalogue -->
+  <div class="breadcrumb-section mb-4">
+    <button (click)="retournerCatalogue()" class="btn btn-link text-primary ps-0">
+      <i class="bi bi-arrow-left me-2"></i>Retour au catalogue
+    </button>
+  </div>
 
-en bas de page mettre une IA qui va proposer parmis les differents livres , ceux qui semblent etre pareil 
+  <!-- Spinner pendant le chargement -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Chargement...</span>
+    </div>
+    <p class="text-muted mt-3">Chargement du livre...</p>
+  </div>
+
+  <!-- Erreur si le livre n'existe pas -->
+  <div *ngIf="error && !isLoading" class="alert alert-danger alert-dismissible fade show" role="alert">
+    <strong>Erreur :</strong> {{ error }}
+    <button type="button" class="btn-close" (click)="error = null"></button>
+  </div>
+
+  <!-- Contenu principal (affiché uniquement quand le livre est chargé) -->
+  <div *ngIf="livre && !isLoading" class="livre-detail-content">
+    <div class="container-fluid px-0">
+
+      <!-- ===== SECTION PRINCIPALE : couverture + infos ===== -->
+      <div class="row g-4 mb-5">
+
+        <!-- Couverture avant -->
+        <div class="col-md-4 d-flex justify-content-center align-items-start">
+          <div class="cover-wrapper">
+            <img
+              *ngIf="livre.openCouverture"
+              [src]="livre.openCouverture"
+              [alt]="livre.titre"
+              class="cover-image front-cover shadow"
+            />
+            <div *ngIf="!livre.openCouverture" class="cover-placeholder d-flex flex-column align-items-center justify-content-center">
+              <i class="bi bi-book text-muted" style="font-size: 4rem;"></i>
+              <p class="text-muted mt-2 small">Pas de couverture</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Informations du livre -->
+        <div class="col-md-8">
+
+          <!-- Titre et auteur -->
+          <h1 class="display-5 fw-bold mb-2">{{ livre.titre }}</h1>
+          <p class="lead text-muted mb-3">
+            <i class="bi bi-person me-2"></i>
+            <strong>{{ livre.autheur.prenom }} {{ livre.autheur.nom }}</strong>
+          </p>
+
+          <!-- Catégories -->
+          <div class="mb-4">
+            <span *ngFor="let cat of livre.categories" class="badge bg-primary me-2 mb-2 px-3 py-2">
+              {{ cat.nomCat }}
+            </span>
+          </div>
+
+          <!-- Prix -->
+          <div class="mb-3">
+            <span class="h2 fw-bold text-success">{{ livre.prix | currency:'EUR':'symbol':'1.2-2' }}</span>
+          </div>
+
+          <!-- Disponibilité / stock -->
+          <div class="mb-4">
+            <!-- badge vert si en stock, rouge si épuisé -->
+            <span *ngIf="livre.quantiteStock > 0" class="badge bg-success fs-6 py-2 px-3">
+              <i class="bi bi-check-circle me-2"></i>En stock — {{ livre.quantiteStock }} disponible(s)
+            </span>
+            <span *ngIf="livre.quantiteStock === 0" class="badge bg-danger fs-6 py-2 px-3">
+              <i class="bi bi-x-circle me-2"></i>Épuisé — indisponible actuellement
+            </span>
+          </div>
+
+          <!-- Sélecteur de quantité + boutons (désactivés si épuisé) -->
+          <div *ngIf="livre.quantiteStock > 0">
+
+            <!-- Sélecteur quantité -->
+            <div class="d-flex align-items-center gap-3 mb-4">
+              <label class="fw-semibold">Quantité :</label>
+              <div class="d-flex align-items-center gap-2 qty-selector">
+                <!-- [disabled] désactive le bouton si quantité = 1 (minimum) -->
+                <button (click)="diminuerQuantite()" class="btn btn-outline-secondary btn-sm" [disabled]="quantite <= 1">
+                  <i class="bi bi-dash"></i>
+                </button>
+                <!-- readonly : l'utilisateur ne peut pas saisir directement (utilise les boutons) -->
+                <input type="text" [value]="quantite" class="form-control form-control-sm qty-input text-center" readonly />
+                <button (click)="augmenterQuantite()" class="btn btn-outline-secondary btn-sm"
+                  [disabled]="quantite >= livre.quantiteStock">
+                  <i class="bi bi-plus"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="d-flex flex-wrap gap-3 mb-3">
+
+              <!--
+                Bouton "Ajouter au panier" :
+                - Appelle ajouterAuPanier() : ajoute le livre SANS naviguer
+                - [disabled] pendant l'ajout pour éviter les double-clics
+              -->
+              <button
+                (click)="ajouterAuPanier()"
+                class="btn btn-outline-primary btn-lg"
+                [disabled]="ajoutEnCours">
+                <span *ngIf="ajoutEnCours" class="spinner-border spinner-border-sm me-2"></span>
+                <i *ngIf="!ajoutEnCours" class="bi bi-cart-plus me-2"></i>
+                {{ ajoutEnCours ? 'Ajout...' : 'Ajouter au panier' }}
+              </button>
+
+              <!--
+                Bouton "Commander maintenant" :
+                - Appelle commander() : ajoute au panier ET navigue vers /panier
+                - Idéal pour aller directement à la commande
+              -->
+              <button
+                (click)="commander()"
+                class="btn btn-primary btn-lg"
+                [disabled]="ajoutEnCours">
+                <i class="bi bi-bag-check me-2"></i>Commander maintenant
+              </button>
+
+            </div>
+          </div>
+
+          <!-- Messages de feedback sous les boutons -->
+          <div *ngIf="messageAjout" class="alert alert-success py-2 mb-0">
+            <i class="bi bi-check-circle me-2"></i>{{ messageAjout }}
+          </div>
+          <div *ngIf="messageErreur" class="alert alert-danger py-2 mb-0">
+            <i class="bi bi-exclamation-circle me-2"></i>{{ messageErreur }}
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ===== SECTION DESCRIPTION ===== -->
+      <div class="row mb-5">
+
+        <!-- Résumé -->
+        <div class="col-lg-8">
+          <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light border-bottom">
+              <h5 class="mb-0"><i class="bi bi-file-text me-2"></i>Résumé</h5>
+            </div>
+            <div class="card-body">
+              <p class="lead mb-0">{{ livre.resume }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Couverture arrière -->
+        <div class="col-lg-4 mt-4 mt-lg-0">
+          <div class="text-center">
+            <h6 class="text-muted mb-3">4ème de couverture</h6>
+            <img
+              *ngIf="livre.closeCouverture"
+              [src]="livre.closeCouverture"
+              [alt]="livre.titre + ' - Dos'"
+              class="cover-image back-cover shadow"
+            />
+            <div *ngIf="!livre.closeCouverture" class="cover-placeholder mx-auto d-flex flex-column align-items-center justify-content-center">
+              <i class="bi bi-book text-muted" style="font-size: 2rem;"></i>
+              <p class="text-muted mt-1 small">Non disponible</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ===== SECTION RECOMMANDATIONS ===== -->
+      <div class="row mb-5">
+        <div class="col-12">
+          <app-recommendations></app-recommendations>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

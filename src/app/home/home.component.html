@@ -1,13 +1,117 @@
-<p>home works!</p>
-<h1>
-  page home qui va afficher la liste des livres deja acheté par la personne
-  connecté 
-</h1>
+<section class="home-hero py-5">
+  <div class="container">
+    <div class="row align-items-center gy-4">
+      <div class="col-lg-7">
+        <div class="hero-text mb-4">
+          <span class="badge bg-primary text-white mb-3">Bienvenue sur votre librairie</span>
+          <h1 class="display-5 fw-bold">
+            {{ isLogged() ? 'Bonjour ' + userName() : 'Découvrez votre prochain livre préféré' }}
+          </h1>
+          <p class="lead text-muted">
+            Une sélection claire et agréable pour retrouver vos livres, vos auteurs favoris et des recommandations personnalisées.
+          </p>
+          <div class="d-flex flex-wrap gap-2 mt-4">
+            <a routerLink="/catalogue" class="btn btn-primary btn-lg">Voir le catalogue</a>
+            <!--
+              CORRECTION : Avant ce lien pointait vers "/admin/autheurs/list" qui est une page admin.
+              Les utilisateurs non-admin étaient redirigés vers /home sans explication.
+              Maintenant on pointe vers /recommendations qui est accessible à tous.
+            -->
+            <a routerLink="/recommendations" class="btn btn-outline-secondary btn-lg">
+              <i class="bi bi-stars me-1"></i>Recommandations
+            </a>
+          </div>
+        </div>
 
-@if (isLogged()) {
-  <h1>Bienvenue {{ userName() }} </h1>
-}
+        <!-- Bloc visible uniquement quand l'utilisateur est connecté -->
+        <div *ngIf="isLogged()" class="info-box p-4 rounded shadow-sm mt-4">
+          <h5 class="mb-2">Vous êtes connecté en tant que :</h5>
+          <p class="mb-1"><strong>{{ userName() }}</strong></p>
+          <p class="text-muted mb-0">{{ userEmail() }}</p>
+        </div>
+      </div>
 
-une une autre div va proposer des livres similaire à ce qu'il a deja acheté cela
-sera basé sur une ia qui va s'appuer sur la descrption ainsi que du resumé du
-livre
+      <div class="col-lg-5">
+        <div class="hero-card p-4 rounded shadow-sm bg-white">
+          <h4 class="mb-3">Suggestions rapides</h4>
+          <p class="text-muted mb-4">Des livres qui pourraient vous intéresser dès maintenant, sans attendre.</p>
+          <div class="recommendation-card p-3 rounded mb-3 bg-light">
+            <h5 class="mb-1">Nouveautés à ne pas manquer</h5>
+            <p class="mb-0 text-muted">Découvrez les ouvrages les plus récents et populaires.</p>
+          </div>
+          <div class="d-flex gap-2 flex-wrap">
+            <a routerLink="/catalogue" class="btn btn-outline-primary flex-fill">Explorer le catalogue</a>
+            <!-- Si connecté → profil, sinon → connexion -->
+            <a *ngIf="isLogged()" routerLink="/profil" class="btn btn-outline-secondary flex-fill">Mon compte</a>
+            <a *ngIf="!isLogged()" routerLink="/login" class="btn btn-outline-secondary flex-fill">Se connecter</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Section livres mis en avant ===== -->
+<section class="home-section py-5 bg-light">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <h2 class="h3 fw-bold">Livres recommandés</h2>
+      <p class="text-muted mb-0">Les vrais livres de votre base de données, présentés pour vous.</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- *ngFor crée une carte Bootstrap pour chaque livre dans featuredBooks -->
+      <div class="col-md-6 col-lg-4" *ngFor="let livre of featuredBooks">
+        <div class="card h-100 shadow-sm border-0">
+          <img *ngIf="livre.openCouverture" [src]="livre.openCouverture" class="card-img-top" [alt]="livre.titre" />
+          <div class="card-body">
+            <h5 class="card-title">{{ livre.titre }}</h5>
+            <p class="text-muted mb-2">{{ livre.autheur.nom }} {{ livre.autheur.prenom }}</p>
+            <!-- *ngFor sur les catégories du livre pour afficher des badges -->
+            <div class="mb-2">
+              <span *ngFor="let cat of livre.categories" class="badge bg-secondary me-1 mb-1">{{ cat.nomCat }}</span>
+            </div>
+            <!-- slice:0:100 limite le résumé à 100 caractères -->
+            <p class="card-text text-dark">{{ livre.resume.slice(0, 100) }}{{ livre.resume.length > 100 ? '...' : '' }}</p>
+          </div>
+          <div class="card-footer bg-transparent border-0 pt-0 d-flex justify-content-between align-items-center">
+            <span class="fw-bold text-success">{{ livre.prix }} €</span>
+            <!-- [routerLink] avec tableau : ['/livreDetails', livre.id] → /livreDetails/42 -->
+            <a [routerLink]="['/livreDetails', livre.id]" class="btn btn-sm btn-outline-primary">Détails</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message si aucun livre n'est encore chargé -->
+      <div *ngIf="featuredBooks.length === 0" class="col-12">
+        <div class="alert alert-info text-center border-0 shadow-sm">
+          <i class="bi bi-info-circle me-2"></i>Chargement des livres en cours ou aucun livre disponible.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Section "Pourquoi choisir cette appli" ===== -->
+<section class="home-section py-5">
+  <div class="container">
+    <div class="section-header text-center mb-5">
+      <h2 class="h3 fw-bold">Pourquoi choisir cette application ?</h2>
+      <p class="text-muted mb-0">Des services simples et utiles pour tous les lecteurs.</p>
+    </div>
+
+    <div class="row g-4">
+      <!-- On boucle sur le tableau "advantages" défini dans le composant TypeScript -->
+      <div class="col-md-4" *ngFor="let avantage of advantages">
+        <div class="feature-card p-4 rounded shadow-sm h-100">
+          <div class="feature-icon mb-3 text-primary">
+            <!-- [class]="avantage.icon + ' fs-3'" combine deux classes CSS -->
+            <i [class]="avantage.icon + ' fs-3'"></i>
+          </div>
+          <h5 class="fw-bold">{{ avantage.title }}</h5>
+          <p class="text-muted mb-0">{{ avantage.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

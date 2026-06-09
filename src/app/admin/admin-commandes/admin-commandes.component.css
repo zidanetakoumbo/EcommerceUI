@@ -1,0 +1,162 @@
+.admin-commandes { padding: 1.5rem; }
+
+.page-title { font-size: 1.5rem; margin-bottom: 1.5rem; color: #2c3e50; }
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+.alert-error { background: #fdecea; color: #c0392b; border: 1px solid #e74c3c; }
+.alert-success { background: #eafaf1; color: #27ae60; border: 1px solid #2ecc71; }
+
+/* Filtres */
+.filtres {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.select-filtre {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: #fff;
+}
+.total-badge {
+  background: #ecf0f1;
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.loading { text-align: center; padding: 2rem; color: #666; }
+.empty-state { padding: 2rem; text-align: center; color: #888; }
+
+/* Cartes commande */
+.commande-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  margin-bottom: 0.75rem;
+  overflow: hidden;
+}
+
+.commande-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+}
+.commande-header:hover { background: #f9f9f9; }
+
+.commande-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  flex-wrap: wrap;
+}
+.commande-id { font-weight: 700; color: #2c3e50; }
+.commande-user { color: #3498db; }
+.commande-date { font-size: 0.85rem; color: #888; }
+
+.commande-actions-header { display: flex; align-items: center; gap: 1rem; }
+.commande-total { font-weight: 600; }
+
+.toggle-icon { color: #888; font-size: 0.8rem; }
+
+/* Badges */
+.statut-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+.statut-pending   { background: #fff3cd; color: #856404; }
+.statut-confirmed { background: #cce5ff; color: #004085; }
+.statut-shipped   { background: #d1ecf1; color: #0c5460; }
+.statut-delivered { background: #d4edda; color: #155724; }
+.statut-cancelled { background: #f8d7da; color: #721c24; }
+
+/* Détail */
+.commande-detail {
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid #eee;
+  background: #fdfdfd;
+}
+
+.livraison-info { margin-bottom: 1rem; font-size: 0.9rem; color: #555; }
+.livraison-info p { margin: 0.2rem 0; }
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.88rem;
+  margin-bottom: 1.25rem;
+}
+.items-table th {
+  text-align: left;
+  padding: 0.4rem 0.6rem;
+  background: #f0f0f0;
+  border-bottom: 2px solid #dee2e6;
+  color: #555;
+}
+.items-table td {
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid #eee;
+}
+
+/* Boutons changement de statut */
+.statut-changer { margin-top: 0.5rem; }
+.statut-changer strong { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; }
+
+.statut-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.btn-statut {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid #ccc;
+  background: #f5f5f5;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: background 0.15s;
+}
+.btn-statut:hover:not(:disabled):not(.active) { background: #e0e0e0; }
+.btn-statut.active {
+  background: #2c3e50;
+  color: #fff;
+  border-color: #2c3e50;
+  cursor: default;
+}
+.btn-statut:disabled:not(.active) { opacity: 0.5; cursor: not-allowed; }
+
+.updating { font-size: 0.85rem; color: #888; margin-top: 0.5rem; display: block; }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  padding: 0.4rem 0.9rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.88rem;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-secondary { background: #ecf0f1; color: #2c3e50; }
+.btn-secondary:hover:not(:disabled) { background: #d5dbdb; }

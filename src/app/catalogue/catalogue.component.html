@@ -1,32 +1,109 @@
-<h1>Catalogue : liste des livres</h1>
->
+<!-- ===== PAGE CATALOGUE ===== -->
+<section class="catalogue-hero py-5 bg-light">
+  <div class="container">
 
-<p>
-  Afficher une barre de filtre en haut <br />
-  categorie , prix , nom autheur, nom oeuvre , <br />
-  la section en dessous affiche selon le filtre <br />
-  la barre de filtre doit etre un composant inseré dans le catalogue pour mettre
-  d'implementer <br />
-  pour permettre d'etudier la comm entre deux composants.
-</p>
+    <!-- En-tête : titre + compteur de résultats -->
+    <div class="row align-items-center mb-4">
+      <div class="col-md-8">
+        <h1 class="display-6 fw-bold">Catalogue des livres</h1>
+        <p class="text-muted mb-0">Parcourez et filtrez les livres disponibles.</p>
+      </div>
+      <div class="col-md-4 text-md-end mt-3 mt-md-0">
+        <span class="badge bg-primary fs-6">{{ livresFiltres.length }} livre(s) trouvé(s)</span>
+      </div>
+    </div>
 
-<div class="container">
-  <div class="row">
-    <div class="row">
-      <div
-        class="card col-2 m-2"
-        *ngFor="let book of books"
-        style="width: 10rem"
-      >
-        <img
-          class="card-img-top"
-          [src]="book.image"
-          alt="Image de {{ book.name }}"
-        />
-        <div class="card-body text-center">
-          <a href="#" class="btn btn-primary">Ajouter</a>
+    <!-- Composant de filtre — émet un événement (filterChange) quand l'utilisateur filtre -->
+    <app-livre-filter (filterChange)="appliquerFiltre($event)"></app-livre-filter>
+
+    <!-- Notification d'ajout au panier (s'efface après 2 secondes) -->
+    <div *ngIf="messageAjout" class="alert alert-success alert-dismissible mt-3 mb-0 py-2">
+      <i class="bi bi-check-circle me-2"></i>{{ messageAjout }}
+    </div>
+
+    <!-- Spinner de chargement -->
+    <div *ngIf="loading" class="text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Chargement...</span>
+      </div>
+    </div>
+
+    <!-- Message si aucun livre ne correspond aux filtres -->
+    <div *ngIf="!loading && livresFiltres.length === 0" class="alert alert-info text-center mt-3">
+      Aucun livre ne correspond à ces critères.
+    </div>
+
+    <!-- Grille des livres -->
+    <div class="row gy-4 mt-1" *ngIf="!loading && livresFiltres.length > 0">
+
+      <!-- *ngFor crée une carte pour chaque livre dans la liste filtrée -->
+      <div class="col-md-6 col-lg-3" *ngFor="let livre of livresFiltres">
+        <div class="card h-100 shadow-sm catalogue-card">
+
+          <!-- Couverture du livre -->
+          <img
+            *ngIf="livre.openCouverture"
+            [src]="livre.openCouverture"
+            [alt]="livre.titre"
+            class="card-img-top catalogue-cover"
+          />
+          <!-- Placeholder si pas d'image -->
+          <div *ngIf="!livre.openCouverture" class="catalogue-cover-placeholder d-flex align-items-center justify-content-center bg-light">
+            <i class="bi bi-book text-muted" style="font-size: 3rem;"></i>
+          </div>
+
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-truncate" [title]="livre.titre">{{ livre.titre }}</h5>
+            <p class="text-muted small mb-2">{{ livre.autheur.nom }} {{ livre.autheur.prenom }}</p>
+
+            <!-- Badges de catégories -->
+            <div class="mb-2">
+              <span *ngFor="let cat of livre.categories" class="badge bg-secondary me-1 mb-1">
+                {{ cat.nomCat }}
+              </span>
+            </div>
+
+            <p class="text-truncate mb-3 small text-muted">{{ livre.resume }}</p>
+
+            <!-- Stock : badge vert si dispo, rouge si épuisé -->
+            <div class="mb-2">
+              <span *ngIf="livre.quantiteStock > 0" class="badge bg-success-subtle text-success border border-success-subtle">
+                <i class="bi bi-check-circle me-1"></i>En stock ({{ livre.quantiteStock }})
+              </span>
+              <span *ngIf="livre.quantiteStock === 0" class="badge bg-danger-subtle text-danger border border-danger-subtle">
+                <i class="bi bi-x-circle me-1"></i>Épuisé
+              </span>
+            </div>
+
+            <!-- Boutons d'action en bas de la carte -->
+            <div class="mt-auto d-flex justify-content-between align-items-center gap-2">
+              <span class="h6 text-success mb-0 fw-bold">{{ livre.prix }} €</span>
+
+              <div class="d-flex gap-2">
+                <!-- Lien vers la page détail du livre -->
+                <a [routerLink]="['/livreDetails', livre.id]" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-eye me-1"></i>Détails
+                </a>
+
+                <!--
+                  Bouton "Ajouter au panier" :
+                  - [disabled] : désactivé si le livre est en cours d'ajout OU si stock = 0
+                  - (click) appelle ajouterAuPanier() défini dans le composant TypeScript
+                -->
+                <button
+                  (click)="ajouterAuPanier(livre)"
+                  class="btn btn-sm btn-primary"
+                  [disabled]="ajoutEnCours === livre.id || livre.quantiteStock === 0">
+                  <span *ngIf="ajoutEnCours === livre.id" class="spinner-border spinner-border-sm me-1"></span>
+                  <i *ngIf="ajoutEnCours !== livre.id" class="bi bi-cart-plus me-1"></i>
+                  {{ livre.quantiteStock === 0 ? 'Épuisé' : 'Ajouter' }}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
   </div>
-</div>
+</section>

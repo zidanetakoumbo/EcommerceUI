@@ -1,0 +1,36 @@
+/* ===== PAGE DE CONNEXION ===== */
+
+/* La carte de connexion centrée à l'écran */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 16px;
+}
+
+/* Cercle avec l'icône livre en haut de la carte */
+.login-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background-color: rgba(13, 110, 253, 0.1); /* Bleu Bootstrap transparent */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+/* Focus sur les champs de formulaire */
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+}
+
+/* L'input-group-text partage la bordure avec le form-control */
+.input-group-text {
+  border-right: none;
+}
+
+/* Le form-control dans un groupe n'a pas de bordure gauche (déjà gérée par l'icon) */
+.input-group .form-control {
+  border-left: none;
+}

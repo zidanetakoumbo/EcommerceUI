@@ -1,0 +1,36 @@
+/* ===== DASHBOARD ADMIN ===== */
+.dashboard-container {
+  padding: 20px 0;
+}
+
+.stat-card {
+  border-radius: 10px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+.stat-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Boutons d'action rapide */
+.btn[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .stat-card h3 { font-size: 1.5rem; }
+  .stat-icon    { width: 46px; height: 46px; }
+}

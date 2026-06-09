@@ -9,14 +9,14 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root',
 })
 export class CategorieService {
-  
+
   constructor( private httpclient : HttpClient) {}
 
   private apiUrl = environment.apiBaseUrl + '/api/categories';
 
   // Recuperer tous les livres
   getCategories(): Observable<Categorie[]> {
-    return this.httpclient.get<Categorie[]>(this.apiUrl + '/all');
+    return this.httpclient.get<Categorie[]>(this.apiUrl +'/all');
   }
 
   // Ajouter un nouveau livre

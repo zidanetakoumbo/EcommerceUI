@@ -1,1 +1,9 @@
-<h1> Page d'administration</h1>
+<div class="admin-wrapper d-flex">
+  <app-admin-sidebar></app-admin-sidebar>
+
+  <main class="admin-content flex-grow-1">
+    <div class="container-fluid p-4">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
+</div>

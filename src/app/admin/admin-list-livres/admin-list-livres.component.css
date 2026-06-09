@@ -1,0 +1,28 @@
+/* ===== ADMIN — LISTE DES LIVRES ===== */
+
+/* Légère teinte au survol des lignes du tableau */
+.table-hover tbody tr:hover {
+  background-color: rgba(13, 110, 253, 0.04);
+  cursor: default;
+}
+
+/* La colonne couverture est toujours centrée */
+td:first-child {
+  vertical-align: middle;
+}
+
+/* Assure que le badge de stock occupe juste la place nécessaire */
+td .badge {
+  font-size: 0.8rem;
+  padding: 0.35rem 0.65rem;
+}
+
+/* Arrondi sur la card principale */
+.card {
+  border-radius: 12px;
+}
+
+/* Les boutons d'action (Modifier / Supprimer) ne prennent pas toute la largeur */
+.btn-sm {
+  white-space: nowrap;
+}

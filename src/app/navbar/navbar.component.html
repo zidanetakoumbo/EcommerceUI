@@ -1,36 +1,109 @@
-<nav class="navbar purple-color navbar-dark navbar-expand-lg bg-body-tertiary">
+<!-- La navbar est cachée dans la section admin (elle a sa propre sidebar) -->
+@if (showNavbar()) {
+<nav class="navbar navbar-dark bg-dark navbar-expand-lg">
   <div class="container-fluid">
-    <a class="navbar-brand" routerLink="/home">E-Commerce</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+
+    <!-- Logo / Nom du site -->
+    <a class="navbar-brand fw-bold" routerLink="/home">
+      <i class="bi bi-book me-2"></i>Librairie
+    </a>
+
+    <!-- Bouton hamburger pour mobile -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain"
+      aria-controls="navbarMain" aria-expanded="false" aria-label="Ouvrir le menu">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarText">
-      <ul class="navbar-nav  me-auto mb-2 mb-lg-0">
+
+    <div class="collapse navbar-collapse" id="navbarMain">
+
+      <!-- Liens de navigation principaux -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" routerLink="/home">Home</a>
+          <a class="nav-link" routerLink="/home" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">
+            Accueil
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/catalogue" >Catalogue</a>
+          <a class="nav-link" routerLink="/catalogue" routerLinkActive="active">
+            Catalogue
+          </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/admin">Admin</a>
+          <a class="nav-link" routerLink="/recommendations" routerLinkActive="active">
+            Recommandations
+          </a>
         </li>
-      </ul> 
-    </div>
-    <div class="d-flex justify-content-end align-items-center"> 
-        <div>
-            <button class="btn btn-primary"><i class="bi bi-cart"></i>(0)</button>
-        </div>
-        <div>
-          @if ( isLoggedIn$ | async) {
-            <a class="nav-link" (click)="OnLogout()" style="cursor: pointer;" >Deconnexion</a>
+
+        <!-- Liens visibles uniquement si connecté -->
+        @if (isLoggedIn$ | async) {
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/mes-commandes" routerLinkActive="active">
+              Mes commandes
+            </a>
+          </li>
+
+          <!-- Lien admin : visible uniquement pour les admins -->
+          @if (isAdmin) {
+            <li class="nav-item">
+              <a class="nav-link text-warning fw-semibold" routerLink="/admin/dashboard" routerLinkActive="active">
+                <i class="bi bi-gear me-1"></i>Admin
+              </a>
+            </li>
           }
-          @else{
-            <a class="nav-link" routerLink="/login">Connexion</a>
-          }
-          
-        </div>
+        }
+      </ul>
+
+      <!-- Partie droite de la navbar -->
+      <div class="d-flex align-items-center gap-2">
+
+        <!-- Bouton Panier avec badge (connecté uniquement) -->
+        @if (isLoggedIn$ | async) {
+          <a routerLink="/panier" class="btn btn-outline-light position-relative me-1">
+            <i class="bi bi-cart2"></i>
+            <!-- Le badge n'apparaît que si le panier n'est pas vide -->
+            @if (cartCount > 0) {
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ cartCount }}
+              </span>
+            }
+          </a>
+        }
+
+        <!-- Menu utilisateur (connecté) -->
+        @if (isLoggedIn$ | async) {
+          <div class="dropdown">
+            <button class="btn btn-outline-light dropdown-toggle" type="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle me-1"></i>{{ userName || 'Mon compte' }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <a class="dropdown-item" routerLink="/profil">
+                  <i class="bi bi-person me-2"></i>Mon profil
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/mes-commandes">
+                  <i class="bi bi-bag me-2"></i>Mes commandes
+                </a>
+              </li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <button class="dropdown-item text-danger" (click)="OnLogout()">
+                  <i class="bi bi-box-arrow-right me-2"></i>Déconnexion
+                </button>
+              </li>
+            </ul>
+          </div>
+
+        } @else {
+          <!-- Boutons connexion / inscription (non connecté) -->
+          <a routerLink="/login" class="btn btn-outline-light btn-sm">Connexion</a>
+          <a routerLink="/register" class="btn btn-primary btn-sm">S'inscrire</a>
+        }
+
+      </div>
     </div>
   </div>
-  <button class="navbar-toggler btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">hhththt</button>
 </nav>
+}

@@ -1,0 +1,122 @@
+<div class="admin-commandes">
+  <h2 class="page-title">Commandes non livrées</h2>
+
+  <!-- Messages -->
+  <div *ngIf="errorMessage" class="alert alert-error">{{ errorMessage }}</div>
+  <div *ngIf="successMessage" class="alert alert-success">{{ successMessage }}</div>
+
+  <!-- Filtre par statut -->
+  <div class="filtres">
+    <label for="statutFiltre"><strong>Filtrer par statut :</strong></label>
+    <select
+      id="statutFiltre"
+      [(ngModel)]="statutFiltre"
+      (change)="onStatutFiltreChange()"
+      class="select-filtre">
+      <option *ngFor="let s of statuts" [value]="s">
+        {{ getStatutInfo(s).label }}
+      </option>
+    </select>
+    <span class="total-badge">{{ totalElements }} commande(s)</span>
+  </div>
+
+  <!-- Chargement -->
+  <div *ngIf="isLoading" class="loading">Chargement...</div>
+
+  <!-- Liste des commandes -->
+  <div *ngIf="!isLoading">
+
+    <!-- Aucun résultat -->
+    <div *ngIf="!commandes.length" class="empty-state">
+      <span *ngIf="statutFiltre === 'NON_LIVREES'">Aucune commande en attente de livraison.</span>
+      <span *ngIf="statutFiltre !== 'NON_LIVREES'">Aucune commande avec ce statut.</span>
+    </div>
+
+    <!-- Tableau des commandes -->
+    <div *ngFor="let commande of commandes" class="commande-card">
+
+      <!-- En-tête cliquable -->
+      <div class="commande-header" (click)="toggleDetail(commande.id)">
+        <div class="commande-meta">
+          <span class="commande-id">#{{ commande.id }}</span>
+          <span class="commande-user">{{ commande.userNom }}</span>
+          <span class="commande-date">{{ commande.dateCommande | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+
+        <div class="commande-actions-header">
+          <span class="statut-badge" [ngClass]="getStatutInfo(commande.status).cssClass">
+            {{ getStatutInfo(commande.status).label }}
+          </span>
+          <span class="commande-total">
+            {{ commande.totalPrice | currency:'EUR':'symbol':'1.2-2' }}
+          </span>
+        </div>
+
+        <span class="toggle-icon">{{ commandeOuverte === commande.id ? '▲' : '▼' }}</span>
+      </div>
+
+      <!-- Détail de la commande -->
+      <div *ngIf="commandeOuverte === commande.id" class="commande-detail">
+
+        <!-- Adresse et dates -->
+        <div class="livraison-info">
+          <p><strong>Adresse :</strong> {{ commande.adresseLivraison }}</p>
+          <p *ngIf="commande.dateExpedition">
+            <strong>Expédiée le :</strong> {{ commande.dateExpedition | date:'dd/MM/yyyy' }}
+          </p>
+          <p *ngIf="commande.dateLivraison">
+            <strong>Livrée le :</strong> {{ commande.dateLivraison | date:'dd/MM/yyyy' }}
+          </p>
+        </div>
+
+        <!-- Articles -->
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>Livre</th>
+              <th>Qté</th>
+              <th>Prix unit.</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of commande.items">
+              <td>{{ item.titreLivre }}</td>
+              <td>{{ item.quantite }}</td>
+              <td>{{ item.prixUnitaire | currency:'EUR':'symbol':'1.2-2' }}</td>
+              <td>{{ item.prixTotal | currency:'EUR':'symbol':'1.2-2' }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Changement de statut -->
+        <div class="statut-changer">
+          <strong>Changer le statut :</strong>
+          <div class="statut-buttons">
+            <button
+              *ngFor="let s of statutsAction"
+              class="btn-statut"
+              [class.active]="commande.status === s"
+              [disabled]="commande.status === s || commandeEnMaj === commande.id"
+              (click)="changerStatut(commande, s)">
+              {{ getStatutInfo(s).label }}
+            </button>
+          </div>
+          <span *ngIf="commandeEnMaj === commande.id" class="updating">Mise à jour...</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination" *ngIf="totalPages > 1">
+      <button class="btn btn-secondary" (click)="pagePrecedente()" [disabled]="pageActuelle === 0">
+        ← Précédent
+      </button>
+      <span>Page {{ pageActuelle + 1 }} / {{ totalPages }}</span>
+      <button class="btn btn-secondary" (click)="pageSuivante()" [disabled]="pageActuelle >= totalPages - 1">
+        Suivant →
+      </button>
+    </div>
+  </div>
+</div>

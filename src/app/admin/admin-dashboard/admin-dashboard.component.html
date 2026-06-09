@@ -1,0 +1,160 @@
+<!-- ===== DASHBOARD ADMINISTRATEUR ===== -->
+<div class="dashboard-container">
+
+  <!-- En-tête de bienvenue -->
+  <div class="row mb-5 align-items-center">
+    <div class="col">
+      <h2 class="display-6 fw-bold text-primary mb-1">Tableau de bord</h2>
+      <p class="text-muted mb-0">Vue d'ensemble de votre librairie</p>
+    </div>
+    <div class="col-auto">
+      <p class="h5 mb-0">
+        Bonjour, <span class="text-primary fw-bold">{{ username || 'Administrateur' }}</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Spinner de chargement -->
+  <div *ngIf="isLoading" class="alert alert-info d-flex align-items-center">
+    <div class="spinner-border spinner-border-sm me-3"></div>
+    Chargement des statistiques...
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="erreur && !isLoading" class="alert alert-warning">
+    <i class="bi bi-exclamation-triangle me-2"></i>{{ erreur }}
+  </div>
+
+  <!-- ===== KPIs — 4 cartes de statistiques ===== -->
+  <div class="row g-4 mb-4" *ngIf="!isLoading">
+
+    <!-- 1. Livres en catalogue -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm h-100 stat-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted small mb-1">Livres en catalogue</p>
+              <!-- currency pipe formate le nombre en monnaie (€, $, etc.) -->
+              <h3 class="fw-bold text-primary mb-0">{{ totalLivres }}</h3>
+            </div>
+            <div class="stat-icon bg-primary-subtle text-primary">
+              <i class="bi bi-book-fill fs-3"></i>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-transparent border-0 text-muted small">
+          <a routerLink="/admin/livres/list" class="text-decoration-none">Gérer le catalogue →</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. CA du mois -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm h-100 stat-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted small mb-1">CA ce mois</p>
+              <!-- number:'1.2-2' formate avec 2 décimales -->
+              <h3 class="fw-bold text-success mb-0">{{ chiffreAffaireMois | currency:'EUR':'symbol':'1.2-2' }}</h3>
+            </div>
+            <div class="stat-icon bg-success-subtle text-success">
+              <i class="bi bi-currency-euro fs-3"></i>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-transparent border-0 text-muted small">
+          Commandes livrées ce mois
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. Commandes livrées total -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm h-100 stat-card">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted small mb-1">Commandes livrées</p>
+              <h3 class="fw-bold text-info mb-0">{{ commandesLivreesTotal }}</h3>
+            </div>
+            <div class="stat-icon bg-info-subtle text-info">
+              <i class="bi bi-cart-check-fill fs-3"></i>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-transparent border-0 text-muted small">
+          Depuis l'ouverture
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. Commandes en attente (nécessitent action) -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="card border-0 shadow-sm h-100 stat-card" [class.border-warning]="commandesEnAttente > 0">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted small mb-1">En attente de traitement</p>
+              <h3 class="fw-bold mb-0" [class.text-warning]="commandesEnAttente > 0" [class.text-muted]="commandesEnAttente === 0">
+                {{ commandesEnAttente }}
+              </h3>
+            </div>
+            <div class="stat-icon" [class.bg-warning-subtle]="commandesEnAttente > 0" [class.text-warning]="commandesEnAttente > 0"
+                 [class.bg-light]="commandesEnAttente === 0" [class.text-muted]="commandesEnAttente === 0">
+              <i class="bi bi-clock-fill fs-3"></i>
+            </div>
+          </div>
+        </div>
+        <div class="card-footer bg-transparent border-0 small">
+          <a routerLink="/admin/commandes" class="text-decoration-none"
+             [class.text-warning]="commandesEnAttente > 0" [class.text-muted]="commandesEnAttente === 0">
+            {{ commandesEnAttente > 0 ? 'Traiter maintenant →' : 'Voir les commandes →' }}
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ===== Actions rapides ===== -->
+  <div class="row" *ngIf="!isLoading">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-light fw-bold">
+          <i class="bi bi-lightning-charge me-2"></i>Actions rapides
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-6 col-md-3">
+              <a routerLink="/admin/livres/add" class="btn btn-outline-success w-100 py-3">
+                <i class="bi bi-plus-circle d-block fs-4 mb-1"></i>
+                Ajouter un livre
+              </a>
+            </div>
+            <div class="col-6 col-md-3">
+              <a routerLink="/admin/livres/list" class="btn btn-outline-primary w-100 py-3">
+                <i class="bi bi-list-ul d-block fs-4 mb-1"></i>
+                Tous les livres
+              </a>
+            </div>
+            <div class="col-6 col-md-3">
+              <a routerLink="/admin/commandes" class="btn btn-outline-warning w-100 py-3">
+                <i class="bi bi-bag-check d-block fs-4 mb-1"></i>
+                Gérer commandes
+              </a>
+            </div>
+            <div class="col-6 col-md-3">
+              <a routerLink="/admin/autheurs/list" class="btn btn-outline-info w-100 py-3">
+                <i class="bi bi-people d-block fs-4 mb-1"></i>
+                Auteurs
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

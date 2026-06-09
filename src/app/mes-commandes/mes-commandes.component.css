@@ -1,0 +1,144 @@
+.commandes-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.page-title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.loading { text-align: center; padding: 2rem; color: #666; }
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  background: #fdecea;
+  color: #c0392b;
+  border: 1px solid #e74c3c;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  background: #f9f9f9;
+  border-radius: 8px;
+}
+.empty-state p { margin-bottom: 1rem; color: #555; }
+
+.total-info { color: #888; margin-bottom: 1rem; font-size: 0.9rem; }
+
+/* Carte commande */
+.commande-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  margin-bottom: 1rem;
+  overflow: hidden;
+}
+
+.commande-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+.commande-header:hover { background: #f9f9f9; }
+
+.commande-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+.commande-id { font-weight: 700; color: #2c3e50; }
+.commande-date { font-size: 0.85rem; color: #888; }
+
+.commande-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.commande-total { font-weight: 600; font-size: 1.1rem; }
+
+.toggle-icon { color: #888; font-size: 0.8rem; }
+
+/* Badges statut */
+.statut-badge {
+  padding: 0.3rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.statut-pending   { background: #fff3cd; color: #856404; }
+.statut-confirmed { background: #cce5ff; color: #004085; }
+.statut-shipped   { background: #d1ecf1; color: #0c5460; }
+.statut-delivered { background: #d4edda; color: #155724; }
+.statut-cancelled { background: #f8d7da; color: #721c24; }
+
+/* Détail */
+.commande-detail {
+  padding: 1rem 1.5rem 1.5rem;
+  border-top: 1px solid #eee;
+}
+
+.livraison-info { margin-bottom: 1rem; font-size: 0.9rem; color: #555; }
+.livraison-info p { margin: 0.25rem 0; }
+
+.items-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
+}
+.items-table th {
+  text-align: left;
+  padding: 0.5rem;
+  background: #f5f5f5;
+  border-bottom: 2px solid #dee2e6;
+  color: #555;
+  font-weight: 600;
+}
+.items-table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid #eee;
+}
+.items-table a { color: #3498db; text-decoration: none; }
+.items-table a:hover { text-decoration: underline; }
+
+.commande-footer { margin-top: 1rem; display: flex; justify-content: flex-end; }
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+.page-info { color: #555; font-size: 0.9rem; }
+
+/* Boutons */
+.btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+}
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: #3498db; color: #fff; }
+.btn-primary:hover:not(:disabled) { background: #2980b9; }
+.btn-secondary { background: #ecf0f1; color: #2c3e50; }
+.btn-secondary:hover:not(:disabled) { background: #d5dbdb; }
+.btn-danger { background: #e74c3c; color: #fff; }
+.btn-danger:hover { background: #c0392b; }

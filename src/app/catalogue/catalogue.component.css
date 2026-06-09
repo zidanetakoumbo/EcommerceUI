@@ -1,0 +1,89 @@
+.catalogue-card {
+  border-radius: 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #e9ecef;
+}
+
+.catalogue-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.catalogue-cover {
+  height: 220px;
+  object-fit: cover;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+/* Placeholder quand il n'y a pas d'image de couverture */
+.catalogue-cover-placeholder {
+  height: 220px;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.catalogue-hero {
+  background: rgba(13, 110, 253, 0.08);
+}
+
+.card .badge {
+  font-size: 0.75rem;
+}
+
+.card-body p.text-truncate {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Styling des boutons */
+.card-body .d-flex.gap-2 {
+  margin-top: 0.5rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #5568d3 0%, #6a3fa0 100%);
+}
+
+.btn-outline-primary {
+  border-color: #0d6efd;
+  color: #0d6efd;
+}
+
+.btn-outline-primary:hover {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
+
+.btn-sm {
+  font-size: 0.875rem;
+  padding: 0.4rem 0.8rem;
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card-body .d-flex.gap-2 {
+    flex-direction: column;
+    gap: 0.5rem !important;
+  }
+
+  .card-body .d-flex.gap-2 .btn {
+    width: 100%;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.6rem;
+  }
+}
+

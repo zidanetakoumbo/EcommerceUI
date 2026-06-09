@@ -1,0 +1,142 @@
+<!-- ===== ADMIN — GESTION DES CATÉGORIES ===== -->
+<div class="container-fluid py-4 px-4">
+
+  <!-- En-tête de la page -->
+  <div class="row mb-4 align-items-center">
+    <div class="col">
+      <h2 class="fw-bold text-primary mb-1">Gestion des Catégories</h2>
+      <p class="text-muted mb-0">
+        Consultez et ajoutez des catégories de livres.
+        <!-- Note : le backend ne supporte pas la modification ni la suppression -->
+      </p>
+    </div>
+    <div class="col-auto">
+      <!-- Badge qui affiche le nombre total de catégories -->
+      <span class="badge bg-primary fs-6">{{ categories.length }} catégorie(s)</span>
+    </div>
+  </div>
+
+  <!-- Messages de feedback -->
+  <div *ngIf="successMessage" class="alert alert-success alert-dismissible mb-4">
+    <i class="bi bi-check-circle me-2"></i>{{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger alert-dismissible mb-4">
+    <i class="bi bi-exclamation-circle me-2"></i>{{ errorMessage }}
+  </div>
+
+  <div class="row g-4">
+
+    <!-- ===== Colonne gauche : formulaire d'ajout ===== -->
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent fw-bold">
+          <i class="bi bi-plus-circle me-2 text-success"></i>Ajouter une catégorie
+        </div>
+        <div class="card-body">
+          <!--
+            (ngSubmit) : déclenché quand l'utilisateur appuie sur Entrée ou clique sur le bouton.
+            #ajoutForm="ngForm" : référence au formulaire pour valider avant soumission.
+          -->
+          <form (ngSubmit)="ajouterCategorie()" #ajoutForm="ngForm">
+            <div class="mb-3">
+              <label for="nomCategorie" class="form-label fw-bold">Nom de la catégorie *</label>
+              <input
+                id="nomCategorie"
+                type="text"
+                class="form-control"
+                placeholder="Ex : Science-Fiction, Policier..."
+                [(ngModel)]="nomNouvelleCategorie"
+                name="nomCategorie"
+                required
+                minlength="2"
+              />
+              <div class="form-text">Minimum 2 caractères.</div>
+            </div>
+
+            <!--
+              [disabled] : le bouton est désactivé pendant l'ajout (évite les double-clics)
+              ou si le formulaire n'est pas valide.
+            -->
+            <button
+              type="submit"
+              class="btn btn-success w-100"
+              [disabled]="isAdding || !nomNouvelleCategorie.trim()">
+              <span *ngIf="isAdding" class="spinner-border spinner-border-sm me-2"></span>
+              {{ isAdding ? 'Ajout en cours...' : 'Ajouter la catégorie' }}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== Colonne droite : liste des catégories ===== -->
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-transparent fw-bold">
+          <i class="bi bi-tags me-2 text-primary"></i>Toutes les catégories
+        </div>
+        <div class="card-body p-0">
+
+          <!-- Spinner de chargement -->
+          <div *ngIf="isLoading" class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+              <span class="visually-hidden">Chargement...</span>
+            </div>
+          </div>
+
+          <!-- Message si aucune catégorie -->
+          <div *ngIf="!isLoading && categories.length === 0"
+               class="text-center py-5 text-muted">
+            <i class="bi bi-tags fs-1 d-block mb-2"></i>
+            Aucune catégorie trouvée.
+          </div>
+
+          <!-- Tableau des catégories -->
+          <div class="table-responsive" *ngIf="!isLoading && categories.length > 0">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th class="ps-4">Catégorie</th>
+                  <th class="text-center">Nombre de livres</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!--
+                  *ngFor boucle sur chaque catégorie.
+                  track cat.id : optimisation Angular pour ne re-rendre que les lignes qui changent.
+                -->
+                <tr *ngFor="let cat of categories">
+                  <td class="ps-4">
+                    <div class="d-flex align-items-center gap-2">
+                      <i class="bi bi-tag text-primary"></i>
+                      <span class="fw-semibold">{{ cat.nomCat }}</span>
+                    </div>
+                  </td>
+                  <td class="text-center">
+                    <!-- Badge : vert si des livres, gris si aucun -->
+                    <span class="badge"
+                          [class.bg-success]="cat.livres && cat.livres.length > 0"
+                          [class.bg-secondary]="!cat.livres || cat.livres.length === 0">
+                      {{ cat.livres ? cat.livres.length : 0 }} livre(s)
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Note informative pour l'admin -->
+      <div class="alert alert-info mt-3 d-flex align-items-center gap-2 border-0 shadow-sm">
+        <i class="bi bi-info-circle-fill flex-shrink-0"></i>
+        <span>
+          La modification et la suppression de catégories ne sont pas disponibles.
+          Pour supprimer une catégorie, contactez un développeur.
+        </span>
+      </div>
+
+    </div>
+  </div>
+</div>

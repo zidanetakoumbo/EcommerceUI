@@ -1,0 +1,17 @@
+.admin-wrapper {
+  min-height: 100vh;
+  background-color: #f8f9fa; /* Un gris très léger pour le fond admin */
+}
+
+.admin-content {
+  /* On laisse la place pour la sidebar de 280px */
+  margin-left: 280px; 
+  transition: margin-left 0.3s;
+}
+
+/* Optionnel : si tu veux que la sidebar disparaisse sur petit écran */
+@media (max-width: 768px) {
+  .admin-content {
+    margin-left: 0;
+  }
+}
