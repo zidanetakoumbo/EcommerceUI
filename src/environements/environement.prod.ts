@@ -1,5 +1,5 @@
 // environment.prod.ts
 export const environment = {
   production: true,
-  apiBaseUrl: 'http://localhost:8080'
+  apiBaseUrl: 'https://ecommerceapi-production-4bea.up.railway.app'
 };
